@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "CommonTypes.h"
 
 class MyCanvas : public wxPanel 
 {
@@ -30,44 +29,40 @@ public:
 
     void OnTimer(wxTimerEvent& event) 
     {
-        UpdateAnimation(m_shape1, m_dy1, m_height);
-        UpdateAnimation(m_shape2, m_dy2, m_height);
-        UpdateAnimation(m_shape3, m_dy3, m_height);
+        UpdateAnimation(m_shape1, m_dy1);
+        UpdateAnimation(m_shape2, m_dy2);
+        UpdateAnimation(m_shape3, m_dy3);
         Refresh();
     }
 
     void Render(wxDC& dc) 
     {
         dc.SetBrush(*wxBLUE_BRUSH);
-        for (auto point : m_shape1)
-        {
-            dc.DrawRectangle(point.x, point.y, m_width, m_height);
-        }
+        dc.DrawPolygon(m_shape1.size(), m_shape1.data());
 
         dc.SetBrush(*wxYELLOW_BRUSH);
-        for (auto point : m_shape2)
-        {
-            dc.DrawRectangle(point.x, point.y, m_width, m_height);
-        }
+        dc.DrawPolygon(m_shape2.size(), m_shape2.data());
 
         dc.SetBrush(*wxRED_BRUSH);
-        for (auto point : m_shape3)
-        {
-            dc.DrawRectangle(point.x, point.y, m_width, m_height);
-        }
+        dc.DrawPolygon(m_shape3.size(), m_shape3.data());
     }
 
-    void UpdateAnimation(std::vector<PointD>& vertexes, double& dy, double height) 
+    void UpdateAnimation(std::vector<wxPoint>& shape, double& dy)
     {
         if (m_jumping) 
         {
-            for (auto& point : vertexes)
+            bool isOutOfBorder = false;
+            for (auto& point : shape)
             {
-                if (point.y <= TOP_LIMIT + dy || point.y + height >= BOTOM_LIMIT + dy)
+                if (point.y <= TOP_LIMIT + dy || point.y >= BOTOM_LIMIT + dy)
                 {
-                    dy = -dy;
+                    isOutOfBorder = true;
                 }
                 point.y -= dy;
+            }
+            if (isOutOfBorder)
+            {
+                dy = -dy;
             }
         }
     }
@@ -88,19 +83,30 @@ private:
     wxTimer m_timer;
     double m_height = 700;
     double m_width = 100;
-    std::vector<PointD> m_shape1 = { {100, 100} };
-    std::vector<PointD> m_shape2 = { {500, 100} };
-    std::vector<PointD> m_shape3 = { {900, 100} };
+    std::vector<wxPoint> m_shape1 = {
+        {100, 100}, {200, 100}, {200, 300}, {300, 300}, {300, 100},
+        {400, 100}, {400, 800}, {300, 800}, {300, 400}, {100, 400},
+    };
+    std::vector<wxPoint> m_shape2 = {
+        {500, 100}, {600, 100}, {700, 400}, {800, 100}, {900, 100}, {900, 800},
+        {800, 800}, {800, 300}, {700, 600}, {600, 300}, {600, 800}, {500, 800},
+    };
+    std::vector<wxPoint> m_shape3 = {
+        {1000, 100}, {1300, 100}, {1300, 400}, {1400, 400},
+        {1400, 800}, {1000, 800}, {1000, 100}, {1100, 200},
+        {1200, 200}, {1200, 400}, {1100, 400}, {1100, 500},
+        {1300, 500}, {1300, 700}, {1100, 700}, {1100, 200}
+    };
     double m_dy1 = 10;
-    double m_dy2 = 10.3;
-    double m_dy3 = 10.6;
+    double m_dy2 = 11;
+    double m_dy3 = 11.3;
     bool m_jumping = false;
 };
 
 class MyFrame : public wxFrame 
 {
 public:
-    MyFrame() : wxFrame(nullptr, wxID_ANY, "Animated Home", wxDefaultPosition, wxSize(1920, 1080)) 
+    MyFrame() : wxFrame(nullptr, wxID_ANY, "Animated Initials", wxDefaultPosition, wxSize(1920, 1080)) 
     {
         m_canvas = new MyCanvas(this);
         SetBackgroundColour(*wxWHITE);

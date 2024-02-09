@@ -12,3 +12,4 @@
 #include <sstream>
 #include <stdexcept>
 #include <cstdlib>
+#include <cmath>

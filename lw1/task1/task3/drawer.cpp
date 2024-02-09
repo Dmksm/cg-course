@@ -3,13 +3,12 @@
 
 namespace
 {
-
 	int Sign(int value)
 	{
 		return (0 < value) - (value < 0);
 	}
 
-	void DrawSteepLine(Image& image, Point from, Point to, char color)
+	void DrawSteepLine(Image& image, Point from, Point to, unsigned long color)
 	{
 		const int deltaX = std::abs(to.x - from.x);
 		const int deltaY = std::abs(to.y - from.y);
@@ -42,7 +41,7 @@ namespace
 		}
 	}
 
-	void DrawSlopeLine(Image& image, Point from, Point to, char color)
+	void DrawSlopeLine(Image& image, Point from, Point to, unsigned long color)
 	{
 		const int deltaX = std::abs(to.x - from.x);
 		const int deltaY = std::abs(to.y - from.y);
@@ -74,10 +73,9 @@ namespace
 			}
 		}
 	}
-
 }
 
-void DrawLine(Image& image, Point from, Point to, char color)
+void DrawLine(Image& image, Point from, Point to, unsigned long color)
 {
 	const int deltaX = std::abs(to.x - from.x);
 	const int deltaY = std::abs(to.y - from.y);
@@ -92,7 +90,7 @@ void DrawLine(Image& image, Point from, Point to, char color)
 	}
 }
 
-void DrawCircle(Image& image, Point center, int radius, char color)
+void DrawCircle(Image& image, Point center, int radius, unsigned long color)
 {
 	int x = 0;
 	int y = radius;
@@ -122,7 +120,13 @@ void DrawCircle(Image& image, Point center, int radius, char color)
 	}
 }
 
-void FillCircle(Image& image, Point center, int radius, uint8_t color)
+void FillCircle(
+	Image& image,
+	Point center,
+	int radius,
+	unsigned long fillColor,
+	unsigned long outlineColor
+)
 {
 	int x = 0;
 	int y = radius;
@@ -130,14 +134,14 @@ void FillCircle(Image& image, Point center, int radius, uint8_t color)
 	int error = 0;
 	while (y >= 0)
 	{
-		image.SetPixel({ center.x + x, center.y + y }, color);
-		image.SetPixel({ center.x + x, center.y - y }, color);
-		image.SetPixel({ center.x - x, center.y + y }, color);
-		image.SetPixel({ center.x - x, center.y - y }, color);
+		image.SetPixel({ center.x + x, center.y + y }, outlineColor);
+		image.SetPixel({ center.x + x, center.y - y }, outlineColor);
+		image.SetPixel({ center.x - x, center.y + y }, outlineColor);
+		image.SetPixel({ center.x - x, center.y - y }, outlineColor);
 		for (int currX = center.x - x + 1; currX < center.x + x; currX++)
 		{
-			image.SetPixel({ currX, center.y - y }, color);
-			image.SetPixel({ currX, center.y + y }, color);
+			image.SetPixel({ currX, center.y - y }, fillColor);
+			image.SetPixel({ currX, center.y + y }, fillColor);
 		}
 		error = 2 * (delta + y) - 1;
 		if (delta < 0 && error <= 0) {

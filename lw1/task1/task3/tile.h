@@ -7,11 +7,11 @@ class Tile
 public:
 	constexpr static int SIZE = 8;
 
-	Tile(char color = ' ') noexcept
+	Tile(unsigned long color = ' ') noexcept
 	{
 		for (unsigned y = 0; y < SIZE; y++)
 		{
-			std::vector<char> row;
+			std::vector<unsigned long> row;
 			for (unsigned x = 0; x < SIZE; x++)
 			{
 				row.push_back(color);
@@ -26,10 +26,10 @@ public:
 	{
 		for (unsigned y = 0; y < SIZE; y++)
 		{
-			std::vector<char> row;
+			std::vector<unsigned long> row;
 			for (unsigned x = 0; x < SIZE; x++)
 			{
-				char color = other.GetPixel({ (int)x, (int)y });
+				unsigned long color = other.GetPixel({ (int)x, (int)y });
 				row.push_back(color);
 			}
 			m_pixels.push_back(row);
@@ -43,7 +43,7 @@ public:
 		assert(m_instanceCount >= 0);
 	}
 
-	void SetPixel(Point p, uint8_t color) noexcept
+	void SetPixel(Point p, unsigned long color) noexcept
 	{
 		if (!IsPointInSize(p, { SIZE, SIZE }))
 		{
@@ -59,7 +59,7 @@ public:
 		}
 	}
 
-	uint8_t GetPixel(Point p) const noexcept
+	unsigned long GetPixel(Point p) const noexcept
 	{
 		if (!IsPointInSize(p, { SIZE, SIZE }))
 		{
@@ -82,5 +82,5 @@ public:
 
 private:
 	inline static int m_instanceCount = 0;
-	std::vector<std::vector<char>> m_pixels;
+	std::vector<std::vector<unsigned long>> m_pixels;
 };

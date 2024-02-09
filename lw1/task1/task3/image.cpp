@@ -6,7 +6,7 @@ int DivUp(int x, int y)
 	return (x - 1) / y + 1;
 }
 
-Image::Image(Size size, uint8_t color)
+Image::Image(Size size, unsigned long color)
 {
 	if (size.height < 0 || size.width < 0)
 	{
@@ -33,7 +33,7 @@ Size Image::GetSize() const noexcept
 	return m_size;
 }
 
-uint8_t Image::GetPixel(Point p) const noexcept
+unsigned long Image::GetPixel(Point p) const noexcept
 {
 	if (!IsPointInSize(p, m_size))
 	{
@@ -53,7 +53,7 @@ uint8_t Image::GetPixel(Point p) const noexcept
 	}
 }
 
-void Image::SetPixel(Point p, uint8_t color)
+void Image::SetPixel(Point p, unsigned long color)
 {
 	if (!IsPointInSize(p, m_size))
 	{
@@ -88,11 +88,14 @@ void Print(const Image& img, wxDC& dc)
 	{
 		for (int x = 0; x < size.width; ++x)
 		{
-			uint8_t intensity = img.GetPixel({ x, y });
-			image.SetRGB(x, y, intensity, intensity, intensity);
+			unsigned long pixel = img.GetPixel({ x, y });
+			unsigned int red = (pixel & 0x00ff0000) >> 16;
+			unsigned int green = (pixel & 0x0000ff00) >> 8;
+			unsigned int blue = (pixel & 0x000000ff);
+			image.SetRGB(x, y, red, green, blue);
 		}
 	}
-	wxBitmap bmp(image, 8);
+	wxBitmap bmp(image);
 	dc.DrawBitmap(bmp, 200, 200);
 }
 

@@ -3,8 +3,14 @@
 #include "image.h"
 
 
-void DrawLine(Image& image, Point from, Point to, char color);
+void DrawLine(Image& image, Point from, Point to, unsigned long color);
 
-void DrawCircle(Image& image, Point center, int radius, char color);
+void DrawCircle(Image& image, Point center, int radius, unsigned long color);
 
-void FillCircle(Image& image, Point center, int radius, uint8_t color);
+void FillCircle(
+	Image& image,
+	Point center,
+	int radius,
+	unsigned long fillColor,
+	unsigned long outlineColor
+);

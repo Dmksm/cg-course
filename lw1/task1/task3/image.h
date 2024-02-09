@@ -10,7 +10,7 @@ public:
      * Конструирует изображение заданного размера. Если размеры не являются положительными,
      * выбрасывает исключение std::out_of_range.
      */
-    explicit Image(Size size, uint8_t color = 0);
+    explicit Image(Size size, unsigned long color = 0);
 
     // Возвращает размер изображения в пикселях.
     Size GetSize() const noexcept;
@@ -19,13 +19,13 @@ public:
      * Возвращает «цвет» пикселя в указанных координатах.Если координаты выходят за пределы
      * изображения, возвращает «пробел».
      */
-    uint8_t GetPixel(Point p) const noexcept;
+    unsigned long GetPixel(Point p) const noexcept;
 
     /**
      * Задаёт «цвет» пикселя в указанных координатах. Если координаты выходят за пределы изображения
      * действие игнорируется.
      */
-    void SetPixel(Point p, uint8_t color);
+    void SetPixel(Point p, unsigned long color);
 
 private:
     Size m_size;

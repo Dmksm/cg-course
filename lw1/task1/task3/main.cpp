@@ -19,17 +19,19 @@ private:
 
     void DrawCircle(wxDC& dc)
     {
-        Image img{ { m_width, m_height }, 255};
-        FillCircle(img, { m_center.x, m_center.y }, 2, 25);
+        Image img{ { m_width, m_height }, m_backgroundColor };
+        FillCircle(img, { m_center.x, m_center.y }, m_radius, m_fillColor, m_outlineColor);
         Print(img, dc);
     }
 
 private:
     wxPoint m_center = { 200, 200 };
-    wxPoint m_dragStart;
-    int m_height = 700;
-    int m_width = 1000;
-    bool m_dragging = false;
+    int m_radius = 40;
+    unsigned long m_backgroundColor = 0;
+    unsigned long m_outlineColor = 255 * pow(256, 2);
+    unsigned long m_fillColor = 255;
+    int m_height = 300;
+    int m_width = 400;
 };
 
 class MyFrame : public wxFrame

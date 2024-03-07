@@ -111,14 +111,14 @@ public:
         if (gc)
         {
 
-            const wxSize bmpSize = bitmap.GetSize();
+            const wxSize bmpSize = m_bitmap.GetSize();
             double w = bmpSize.GetWidth();
             double h = bmpSize.GetHeight();
 
             const wxSize drawSize = ToDIP(GetClientSize());
             double x = (drawSize.GetWidth() - w) / 2;
             double y = (drawSize.GetHeight() - h) / 2;
-            gc->DrawBitmap(bitmap, x, y, gc->FromDIP(w), gc->FromDIP(h));
+            gc->DrawBitmap(m_bitmap, x, y, gc->FromDIP(w), gc->FromDIP(h));
 
             for (const auto& pointsVector : m_dots)
             {

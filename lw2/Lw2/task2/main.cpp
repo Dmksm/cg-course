@@ -99,7 +99,7 @@ void MyFrame::OnCreateImage(wxCommandEvent& event)
 void MyFrame::OnOpenImage(wxCommandEvent& event)
 {
     wxFileDialog dialog(this, "Open Image File", "", "",
-        "Image Files (*.png;*.jpg;*.jpeg;*.bmp)|*.png;*.jpg;*.jpeg;*.bmp",
+        "Image Files (*.png;*.jpeg;*.bmp)|*.png;*.jpeg;*.bmp",
         wxFD_OPEN | wxFD_FILE_MUST_EXIST
     );
 

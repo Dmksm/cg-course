@@ -90,7 +90,7 @@ public:
     void SaveBitmap()
     {
         wxFileDialog exportFileDialog(this, _("Export drawing"), "", "",
-            "PNG files (*.png)|*.png", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+            "PNG files (*.png;*.jpeg;*.bmp)|*.png;*.jpeg;*.bmp", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 
         if (exportFileDialog.ShowModal() == wxID_CANCEL)
             return;

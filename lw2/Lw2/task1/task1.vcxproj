@@ -135,14 +135,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="brightnesschangeevent.h" />
     <ClInclude Include="BufferedBitmap.h" />
-    <ClInclude Include="drawingcanvas.h" />
     <ClInclude Include="OpacityDialog.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DrawingCanvas.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

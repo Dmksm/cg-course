@@ -31,7 +31,7 @@ public:
 
     void OnLeftDown(wxMouseEvent& event)
     {
-        m_squiggles.push_back({});
+        m_dots.push_back({});
         m_dragging = true;
     }
     
@@ -50,7 +50,7 @@ public:
         if (m_dragging)
         {
             auto pt = event.GetPosition();
-            auto& currentSquiggle = m_squiggles.back();
+            auto& currentSquiggle = m_dots.back();
 
             currentSquiggle.push_back(pt);
             Refresh();
@@ -74,11 +74,11 @@ public:
             double y = (drawSize.GetHeight() - h) / 2;
             gc->DrawBitmap(m_bitmap, x, y, gc->FromDIP(w), gc->FromDIP(h));
 
-            for (const auto& pointsVector : m_squiggles)
+            for (const auto& pointsVector : m_dots)
             {
                 if (pointsVector.size() > 1)
                 {
-                    gc->SetPen(wxPen(m_color, this->FromDIP(8)));
+                    gc->SetPen(wxPen(m_color, FromDIP(8)));
                     gc->StrokeLines(pointsVector.size(), pointsVector.data());
                 }
             }
@@ -87,10 +87,56 @@ public:
         }
     }
 
+    void SaveBitmap()
+    {
+        wxFileDialog exportFileDialog(this, _("Export drawing"), "", "",
+            "PNG files (*.png)|*.png", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+
+        if (exportFileDialog.ShowModal() == wxID_CANCEL)
+            return;
+
+        wxBitmap bitmap(this->GetSize() * this->GetContentScaleFactor());
+
+        wxMemoryDC memDC;
+
+        memDC.SetUserScale(this->GetContentScaleFactor(), this->GetContentScaleFactor());
+        memDC.SelectObject(bitmap);
+
+        wxDC* dc = &memDC;
+        dc->SetBackground(*wxBLACK_BRUSH);
+        dc->Clear();
+
+        std::unique_ptr<wxGraphicsContext> gc{ wxGraphicsContext::CreateFromUnknownDC(*dc) };
+
+        if (gc)
+        {
+
+            const wxSize bmpSize = bitmap.GetSize();
+            double w = bmpSize.GetWidth();
+            double h = bmpSize.GetHeight();
+
+            const wxSize drawSize = ToDIP(GetClientSize());
+            double x = (drawSize.GetWidth() - w) / 2;
+            double y = (drawSize.GetHeight() - h) / 2;
+            gc->DrawBitmap(bitmap, x, y, gc->FromDIP(w), gc->FromDIP(h));
+
+            for (const auto& pointsVector : m_dots)
+            {
+                if (pointsVector.size() > 1)
+                {
+                    gc->SetPen(wxPen(m_color, FromDIP(8)));
+                    gc->StrokeLines(pointsVector.size(), pointsVector.data());
+                }
+            }
+        }
+
+        bitmap.SaveFile(exportFileDialog.GetPath(), wxBITMAP_TYPE_PNG);
+    }
+
     void SetBitmap(const wxBitmap& bitmap)
     {
         m_bitmap = bitmap;
-        m_squiggles.clear();
+        m_dots.clear();
         Refresh();
     }
 
@@ -102,11 +148,11 @@ public:
 private:
     wxBitmap m_bitmap;
     wxSize m_size;
-    wxColour m_color;
+    wxColour m_color = wxColour(255ul);
 
     bool m_dragging = false;
     wxPoint m_pos;
     wxPoint m_dragStartPos;
 
-    std::vector<std::vector<wxPoint2DDouble>> m_squiggles;
+    std::vector<std::vector<wxPoint2DDouble>> m_dots;
 };

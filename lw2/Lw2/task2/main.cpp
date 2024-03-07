@@ -49,8 +49,8 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 
     m_staticBitmap = new BufferedBitmap(this, wxID_ANY, wxBitmap(wxSize(1, 1)),
         wxDefaultPosition, FromDIP(wxSize(500, 200)));
-    m_staticBitmap->SetDoubleBuffered(true);
-    m_staticBitmap->SetBackgroundColour(*wxRED);
+    m_staticBitmap->SetDoubleBuffered(true); 
+    m_staticBitmap->SetBackgroundColour(*wxBLACK);
 
     imageButton->Bind(wxEVT_BUTTON, &MyFrame::OnOpenImage, this);
     colorButton->Bind(wxEVT_BUTTON, &MyFrame::OnChangeColor, this);
@@ -85,28 +85,15 @@ void MyFrame::OnChangeColor(wxCommandEvent& event)
 
 void MyFrame::OnSaveImage(wxCommandEvent& event)
 {
-    wxFileDialog dialog(this, "Open Image File", "", "",
-        "Image Files (*.png;*.jpg;*.jpeg;*.bmp)|*.png;*.jpg;*.jpeg;*.bmp",
-        wxFD_OPEN | wxFD_FILE_MUST_EXIST
-    );
-
-    if (dialog.ShowModal() == wxID_CANCEL)
-    {
-        return;
-    }
-
-    if (!m_image.LoadFile(dialog.GetPath()))
-    {
-        wxMessageBox("Failed to load image file", "Error", wxOK | wxICON_ERROR);
-        return;
-    }
-
-    UpdateBitmapImage(m_image);
+    m_staticBitmap->SaveBitmap();
 }
 
 void MyFrame::OnCreateImage(wxCommandEvent& event)
 {
-    this->ClearBackground();
+    wxSize currSize = m_staticBitmap->GetSize();
+    wxImage img;
+    img.Create(currSize);
+    UpdateBitmapImage(img);
 }
 
 void MyFrame::OnOpenImage(wxCommandEvent& event)

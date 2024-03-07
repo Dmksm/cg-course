@@ -7,6 +7,8 @@ class Tile
 public:
 	constexpr static int SIZE = 8;
 
+	//не использовать пробел дефолтный цвет задать 
+	//использовать uint32_t потому что может другой размер на разных платформах имеет
 	Tile(unsigned long color = ' ') noexcept
 	{
 		for (unsigned y = 0; y < SIZE; y++)

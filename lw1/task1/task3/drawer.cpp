@@ -138,10 +138,10 @@ void FillCircle(
 		image.SetPixel({ center.x + x, center.y - y }, outlineColor);
 		image.SetPixel({ center.x - x, center.y + y }, outlineColor);
 		image.SetPixel({ center.x - x, center.y - y }, outlineColor);
-		for (int currX = center.x - x + 1; currX < center.x + x; currX++)
+		for (int currX = center.x - x; currX < center.x + x; currX++)
 		{
-			image.SetPixel({ currX, center.y - y }, fillColor);
-			image.SetPixel({ currX, center.y + y }, fillColor);
+			image.SetPixel({ currX, center.y - y + 1 }, fillColor);
+			image.SetPixel({ currX, center.y + y - 1 }, fillColor);
 		}
 		error = 2 * (delta + y) - 1;
 		if (delta < 0 && error <= 0) {

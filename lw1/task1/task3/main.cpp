@@ -37,7 +37,7 @@ private:
 class MyFrame : public wxFrame
 {
 public:
-    MyFrame() : wxFrame(nullptr, wxID_ANY, "Draggable House", wxDefaultPosition, wxSize(1900, 1000))
+    MyFrame() : wxFrame(nullptr, wxID_ANY, "Drawing Circle", wxDefaultPosition, wxSize(1900, 1000))
     {
         m_canvas = new MyCanvas(this);
         SetBackgroundColour(*wxWHITE);

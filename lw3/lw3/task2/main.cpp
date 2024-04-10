@@ -12,7 +12,7 @@ int SelectedPointIndex = -1;
 bool IsDragging = false;
 Point MousePos;
 
-Point CalculateBezierPoint(float t) 
+Point CalculateBezierPoint(float t)
 {
     float oneMinusT = 1.0f - t;
     Point p;
@@ -103,7 +103,7 @@ int main() {
         return -1;
     }
 
-    window = glfwCreateWindow(1920, 1080, "Draw Bezier Curve", NULL, NULL);
+    window = glfwCreateWindow(1920, 1080, "Draw Smeshariki", NULL, NULL);
     if (!window) 
     {
         glfwTerminate();

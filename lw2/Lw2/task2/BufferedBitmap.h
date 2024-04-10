@@ -60,6 +60,7 @@ public:
     void OnPaint(wxPaintEvent& evt)
     {
         wxAutoBufferedPaintDC dc(this);
+        dc.SelectObject(m_bitmap);
         dc.Clear();
         wxGraphicsContext *gc = wxGraphicsContext::Create(dc);
 
@@ -72,13 +73,14 @@ public:
             const wxSize drawSize = ToDIP(GetClientSize());
             double x = (drawSize.GetWidth() - w) / 2;
             double y = (drawSize.GetHeight() - h) / 2;
+            
             gc->DrawBitmap(m_bitmap, x, y, gc->FromDIP(w), gc->FromDIP(h));
 
-            for (const auto& pointsVector : m_dots)
+            for (const auto& pointsVector : m_dots) // оптимизировать чтобы при добавении новых символов программа не начинала работать медленнее 
             {
                 if (pointsVector.size() > 1)
                 {
-                    gc->SetPen(wxPen(m_color, FromDIP(8)));
+                    gc->SetPen(wxPen(m_color, FromDIP(8))); // цвет должен быть как в пейнте изменил только для следующего рисунка а для текущего осталось также
                     gc->StrokeLines(pointsVector.size(), pointsVector.data());
                 }
             }

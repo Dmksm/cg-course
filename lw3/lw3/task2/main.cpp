@@ -19,6 +19,7 @@ struct Color
 class Krosh 
 {
 public:
+    // структуру именованных полей для каждого цвета частей чтобы не перепутать и ширину и высоту тоже в структуру
     Krosh(Point position, unsigned width, unsigned height, Color bodyColor, Color legColor, Color handColor, Color earColor)
         : m_position(position)
         , m_width(width)
@@ -165,6 +166,7 @@ int main() {
         return -1;
     }
 
+    //класс окна добавить как из лекции
     window = glfwCreateWindow(1920, 1080, "Draw Krosh", NULL, NULL);
     if (!window) 
     {

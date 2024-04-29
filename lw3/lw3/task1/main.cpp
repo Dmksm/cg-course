@@ -7,6 +7,8 @@ struct Point
     float x, y;
 };
 
+//сделать без глобальных переменных сделать в классе Кривая Безье которая посмотреть как связать данные в калбеке с окном
+
 std::vector<Point> ControlPoints = { {100, 100}, {200, 300}, {400, 200}, {500, 400} };
 int SelectedPointIndex = -1;
 bool IsDragging = false;
@@ -45,6 +47,8 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
                 float dx = MousePos.x - ControlPoints[i].x;
                 float dy = MousePos.y - ControlPoints[i].y;
                 float distanceSquared = dx * dx + dy * dy;
+                //сделать понятней код 
+
                 if (distanceSquared < 25) 
                 {
                     SelectedPointIndex = static_cast<int>(i);

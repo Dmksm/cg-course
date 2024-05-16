@@ -2,14 +2,23 @@
 #include <memory>
 
 #include "Window.h"
-#include "Line.h"
 #include "MorphObject.h"
 
 int main()
 {
+    const std::string fragmentShader = R"(
+#version 450 core
+varying vec4 pos;
+
+void main()
+{
+    gl_FragColor = vec4(pos.xyz, 1.0);
+}
+    )";
     const std::string vertexShaderCircle = R"(
 #version 450 core
 
+varying vec4 pos;
 layout (location=0) in vec3 position;
 layout (location=16) uniform mat4 u_matrix;
 layout (location=0) uniform float u_phase;
@@ -23,6 +32,7 @@ void main()
 
     vec4 vertex = mix(startPosition, endPosition, u_phase);
     gl_Position = u_matrix * vertex;
+    pos = u_matrix * vertex;
 }
     )";
 
@@ -48,6 +58,7 @@ void main()
 
     Window window(glfwWindow);
     window.AddDrawable(std::make_shared<MorphObject>(100, window.GetVBO(), window.GetVAO()));
+    window.AddShader(std::make_shared<Shader>(GL_FRAGMENT_SHADER, fragmentShader.c_str()));
     window.AddShader(std::make_shared<Shader>(GL_VERTEX_SHADER, vertexShaderCircle.c_str()));
     window.Run();
 

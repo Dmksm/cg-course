@@ -30,15 +30,18 @@ private:
 		glUniform1f(0, (sinf(m_phase) + 1) / 2);
 		glBindVertexArray(m_VAO);
 
-		glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
-		glBegin(GL_TRIANGLES);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glBegin(GL_QUADS);
 		float size = 2.0 / m_density;
 
-		for (float y = -1; y <= 1; y += size)
+		for (float y = -1; y < 1; y += size)
 		{
-			for (float x = -1; x <= 1; x += size)
+			for (float x = -1; x < 1; x += size)
 			{
 				glVertex3f(x, y, 0);
+				glVertex3f(x + size, y, 0);
+				glVertex3f(x + size, y + size, 0);
+				glVertex3f(x, y + size, 0);
 			}
 		}
 		glEnd();

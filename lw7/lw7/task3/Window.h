@@ -48,7 +48,7 @@ public:
         Init();
 
         glClearColor(1, 1, 1, 0);
-        glPointSize(5);
+        glPointSize(2);
 
         glUseProgram(*m_program);
 

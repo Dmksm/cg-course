@@ -18,32 +18,11 @@ public:
 	MorphObject(int density, const unsigned int& VBO, const unsigned int& VAO)
 		: m_VBO(VBO)
 		, m_VAO(VAO)
+		, m_density(density)
 	{
-		float size = 2.0 / density;
-
-		for (float y = -1; y <= 1; y += size)
-		{
-			for (float x = -1; x <= 1; x += size)
-			{
-				AddVertex(x, y, 0);
-				AddVertex(x + size, y, 0);
-				AddVertex(x, y + size, 0);
-
-				AddVertex(x + size, y, 0);
-				AddVertex(x, y + size, 0);
-				AddVertex(x + size, y + size, 0);
-			}
-		}
 	}
 
 private:
-	void AddVertex(float x, float y, float z)
-	{
-		m_vertices.push_back(x);
-		m_vertices.push_back(y);
-		m_vertices.push_back(z);
-	}
-
 	void Draw()override
 	{
 		UpdatePhase();
@@ -51,7 +30,18 @@ private:
 		glUniform1f(0, (sinf(m_phase) + 1) / 2);
 		glBindVertexArray(m_VAO);
 
-		glDrawArrays(GL_POINTS, 0, m_vertices.size());
+		glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+		glBegin(GL_TRIANGLES);
+		float size = 2.0 / m_density;
+
+		for (float y = -1; y <= 1; y += size)
+		{
+			for (float x = -1; x <= 1; x += size)
+			{
+				glVertex3f(x, y, 0);
+			}
+		}
+		glEnd();
 		
 		glBindVertexArray(0);
 	}
@@ -89,5 +79,6 @@ private:
 
 	std::vector<float> m_vertices;
 	float m_phase;
+	int m_density;
 	const unsigned int& m_VBO, m_VAO;
 };

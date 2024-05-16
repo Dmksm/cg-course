@@ -18,7 +18,7 @@ CMyApplication::CMyApplication(const char* title, int width, int height)
 		"assets/xpander.3ds"
 	)
 	, m_rotationController(width, height)
-	, m_light(CVector3f(0, 10, 0))
+	, m_light(CVector3f(0, 10, 40))
 	, m_skyBox(
 		  L"assets/Galaxy_LT.png",
 		  L"assets/Galaxy_RT.png",

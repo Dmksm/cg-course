@@ -59,7 +59,6 @@ public:
             SetupProjectionMatrix(width, height);
             SetupCameraMatrix();
             SetupShaderMatrix();
-
             glUniformMatrix4fv(16, 1, GL_FALSE, m_shaderMatrix);
 
             DrawObjects();

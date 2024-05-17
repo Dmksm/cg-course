@@ -51,20 +51,19 @@ public:
 
         while (!glfwWindowShouldClose(m_window))
         {
-            int width, height;
-            glfwGetWindowSize(m_window, &width, &height);
+            int screenWidth, screenHeight;
+            glfwGetWindowSize(m_window, &screenWidth, &screenHeight);
 
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glEnable(GL_DEPTH_TEST);
 
             OnMotion();
-            SetupProjectionMatrix(width, height);
+            SetupProjectionMatrix(screenWidth, screenHeight);
             SetupCameraMatrix();
             SetupShaderMatrix();
+            glUniformMatrix4fv(16, 1, GL_FALSE, m_shaderMatrix);
 
-            glUniformMatrix4fv(16, 1, GL_FALSE, m_shaderMatrix);
-            glUniformMatrix4fv(16, 1, GL_FALSE, m_shaderMatrix);
-            glUniform2f(0, width, height);
+            glUniform2f(0, screenWidth, screenHeight);
 
             DrawObjects();
 

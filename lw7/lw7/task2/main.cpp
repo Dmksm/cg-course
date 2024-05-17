@@ -8,6 +8,20 @@
 
 int main()
 {
+    // сделать чтобы сохранял пропорции и доп кружочек сверху
+//    const std::string vertexShader = R"(
+//#version 450 core
+//
+//layout (location=0) in vec4 position;
+//layout (location=16) uniform mat4 u_matrix;
+//varying vec4 pos;
+//
+//void main()
+//{
+//    pos = u_matrix * vec4(position.x, position.y, 0, 1);
+//}
+//    )";
+
     const std::string fragmentShader = R"(
 #version 450 core
 
@@ -16,12 +30,20 @@ layout(location = 0) uniform vec2 u_resolution;
 void main()
 {
     vec2 pixelCoord = gl_FragCoord.xy / u_resolution.xy;
-    float dis = distance(pixelCoord, vec2(0.5, 0.5));
-    float isInCircle = step(0.15, dis);
 
-    vec3 color = isInCircle == 1.0 
-        ? vec3(1.0, 1.0, 1.0) 
-        : vec3(1.0, 0.0, 0.0);
+    vec2 pos = vec2(0.5, 0.4);
+    float dis = distance(pixelCoord, pos);
+    vec2 pos2 = vec2(0.5, 0.75);
+    float dis2 = distance(pixelCoord, pos2);
+    float bigRadius = 0.15;
+    float smallRadius = 0.13;
+
+    vec3 color = vec3(0.0, 1.0, 1.0);
+    if ((smallRadius < dis && dis < bigRadius) || 
+        (smallRadius < dis2 && dis2 < bigRadius))
+    {
+        color = vec3(0.0, 0.0, 0.0);
+    }
 
     gl_FragColor = vec4(color, 1.0);
 }

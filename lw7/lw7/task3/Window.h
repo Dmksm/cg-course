@@ -33,54 +33,24 @@ public:
         glGenBuffers(1, &m_VBO);
     }
 
-    ~Window()
+    void Run()
     {
-        glfwTerminate();
+        Init();
+        while (!glfwWindowShouldClose(m_window))
+        {
+            RunFrame();
+        }
+        CleanUp();
+    }
+
+    void AddDrawable(std::shared_ptr<IDrawable> drawable)
+    {
+        m_drawables.push_back(drawable);
     }
 
     void AddShader(std::shared_ptr<Shader> shader)
     {
         m_shaders.push_back(shader);
-    }
-
-    void Run()
-    {
-        Init();
-
-        glClearColor(1, 1, 1, 0);
-        glPointSize(2);
-
-        glUseProgram(*m_program);
-
-        while (!glfwWindowShouldClose(m_window))
-        {
-            int width, height;
-            glfwGetWindowSize(m_window, &width, &height);
-
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            glEnable(GL_DEPTH_TEST);
-
-            OnMotion();
-
-            SetupProjectionMatrix(width, height);
-            SetupCameraMatrix();
-            SetupShaderMatrix();
-
-            glBindVertexArray(m_VAO);
-            DrawObjects();
-            glBindVertexArray(0);
-
-            glfwSwapBuffers(m_window);
-            glfwPollEvents();
-        }
-
-        glDeleteBuffers(1, &m_VBO);
-        glDeleteVertexArrays(1, &m_VAO);
-    }
-
-    void AddDrawable(std::shared_ptr<IDrawable> drawable)
-    {
-        m_drawableObjects.push_back(drawable);
     }
 
     const unsigned int& GetVAO()const
@@ -93,29 +63,72 @@ public:
         return m_VBO;
     }
 
+    ~Window()
+    {
+        glfwTerminate();
+    }
+
 private:
+    void CleanUp()
+    {
+        glDeleteBuffers(1, &m_VBO);
+        glDeleteVertexArrays(1, &m_VAO);
+    }
+
+    void RunFrame()
+    {
+        int screenWidth, screenHeight;
+        glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+        glfwGetWindowSize(m_window, &screenWidth, &screenHeight);
+        glEnable(GL_DEPTH_TEST);
+
+        SetupMatrixes(screenWidth, screenHeight);
+        OnMotion();
+        Draw();
+
+        glfwSwapBuffers(m_window);
+        glfwPollEvents();
+    }
+
     void Init()
     {
         InitShaders();
 
-        for (auto& drawableObject : m_drawableObjects)
+        for (auto& drawableObject : m_drawables)
         {
             drawableObject->Init();
         }
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
+
+        glClearColor(1, 1, 1, 0);
+        glUseProgram(*m_program);
+    }
+
+    void Draw()
+    {
+        glBindVertexArray(m_VAO);
+        DrawObjects();
+        glBindVertexArray(0);
+    }
+
+    void SetupMatrixes(int screenWidth, int screenHeight)
+    {
+        SetupProjectionMatrix(screenWidth, screenHeight);
+        SetupModelViewMatrix();
+        SetupShaderMatrix();
     }
 
     void SetupShaderMatrix()
     {
-        auto matrix = m_projectionMatrix * m_cameraMatrix;
+        auto mvpMatrix = m_projectionMatrix * m_modelViewMatrix;
 
-        for (int i = 0; i < matrix.length(); ++i)
+        for (int i = 0; i < mvpMatrix.length(); ++i)
         {
-            for (int j = 0; j < matrix[i].length(); ++j)
+            for (int j = 0; j < mvpMatrix[i].length(); ++j)
             {
-                m_shaderMatrix[i * matrix.length() + j] = float(matrix[i][j]);
+                m_shaderMatrix[i * mvpMatrix.length() + j] = float(mvpMatrix[i][j]);
             }
         }
 
@@ -180,16 +193,16 @@ private:
     void RotateCamera(double xAngleRadians, double yAngleRadians)
     {
         const glm::dvec3 xAxis{
-            m_cameraMatrix[0][0], m_cameraMatrix[1][0], m_cameraMatrix[2][0]
+            m_modelViewMatrix[0][0], m_modelViewMatrix[1][0], m_modelViewMatrix[2][0]
         };
         const glm::dvec3 yAxis{
-            m_cameraMatrix[0][1], m_cameraMatrix[1][1], m_cameraMatrix[2][1]
+            m_modelViewMatrix[0][1], m_modelViewMatrix[1][1], m_modelViewMatrix[2][1]
         };
 
-        m_cameraMatrix = glm::rotate(m_cameraMatrix, xAngleRadians, xAxis);
-        m_cameraMatrix = glm::rotate(m_cameraMatrix, yAngleRadians, yAxis);
+        m_modelViewMatrix = glm::rotate(m_modelViewMatrix, xAngleRadians, xAxis);
+        m_modelViewMatrix = glm::rotate(m_modelViewMatrix, yAngleRadians, yAxis);
 
-        m_cameraMatrix = Orthonormalize(m_cameraMatrix);
+        m_modelViewMatrix = Orthonormalize(m_modelViewMatrix);
     }
 
     void SetupProjectionMatrix(int width, int height)
@@ -203,15 +216,15 @@ private:
         glLoadMatrixd(&m_projectionMatrix[0][0]);
     }
 
-    void SetupCameraMatrix()
+    void SetupModelViewMatrix()
     {
         glMatrixMode(GL_MODELVIEW);
-        glLoadMatrixd(&m_cameraMatrix[0][0]);
+        glLoadMatrixd(&m_modelViewMatrix[0][0]);
     }
 
     void DrawObjects()
     {
-        for (auto& drawableObject : m_drawableObjects)
+        for (auto& drawableObject : m_drawables)
         {
             drawableObject->Draw();
         }
@@ -235,11 +248,11 @@ private:
 
     GLFWwindow* m_window;
     std::unique_ptr<ShaderProgram> m_program = nullptr;
-    std::vector<std::shared_ptr<IDrawable>> m_drawableObjects = {};
+    std::vector<std::shared_ptr<IDrawable>> m_drawables = {};
     std::vector<std::shared_ptr<Shader>> m_shaders = {};
     unsigned int m_VAO, m_VBO;
 
-    glm::dmat4x4 m_cameraMatrix = glm::lookAt(
+    glm::dmat4x4 m_modelViewMatrix = glm::lookAt(
         glm::dvec3{ 0.0, 0.0, 5 },
         glm::dvec3{ 0.0, 0.0, 0.0 },
         glm::dvec3{ 0.0, 1.0, 0.0 }

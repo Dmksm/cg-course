@@ -15,10 +15,11 @@
 class MorphObject : public IDrawable
 {
 public:
-	MorphObject(int density, const unsigned int& VBO, const unsigned int& VAO)
+	MorphObject(int density, const unsigned& VBO, const unsigned& VAO)
 		: m_VBO(VBO)
 		, m_VAO(VAO)
 		, m_density(density)
+		, m_phase(0)
 	{
 	}
 
@@ -33,7 +34,6 @@ private:
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		glBegin(GL_QUADS);
 		float size = 2.0 / m_density;
-
 		for (float y = -1; y < 1; y += size)
 		{
 			for (float x = -1; x < 1; x += size)

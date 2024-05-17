@@ -22,7 +22,7 @@ void main()
     float x = r * cos(position.x);
     float y = r * sin(position.x);
     gl_Position = u_matrix * vec4(x, y, 0, 1);
-    pos = u_matrix * vec4(x, y, 0, 1);
+    pos = vec4(x, y, 0, 1);
 }
     )";
 

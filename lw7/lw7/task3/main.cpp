@@ -6,7 +6,7 @@
 
 int main()
 {
-    //уметь объяснить как передается параметры 
+    // объяснить как передается параметры 
     //чтобы при вращении цвет не менялся оставался на той же стороне и менялся при вращении
     const std::string fragmentShader = R"(
 #version 450 core
@@ -22,8 +22,8 @@ void main()
 
 varying vec4 pos;
 layout (location=0) in vec3 position;
-layout (location=16) uniform mat4 u_matrix;
-layout (location=0) uniform float u_phase;
+layout (location=16) uniform mat4 mvpMatrix;
+layout (location=0) uniform float phase;
 
 void main()
 {
@@ -32,9 +32,9 @@ void main()
     float finishZ = position.x * position.x - position.y * position.y;
     vec4 endPosition = vec4(position.xy, finishZ, 1.0);
 
-    vec4 vertex = mix(startPosition, endPosition, u_phase);
-    gl_Position = u_matrix * vertex;
-    pos = u_matrix * vertex;
+    vec4 vertex = mix(startPosition, endPosition, phase);
+    gl_Position = mvpMatrix * vertex;
+    pos = vertex;
 }
     )";
 
